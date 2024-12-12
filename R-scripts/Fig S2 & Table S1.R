@@ -51,7 +51,6 @@ to_drop <- ASV_tree$tip.label[!ASV_tree$tip.label %in% fungi_tax_Flattenning$OTU
 ASV_tree_zyl <- drop.tip(as.phylo(ASV_tree), to_drop) 
 #plot(ASV_tree_zyl)
 
-### Fungaltraits
 ################################################################################
 OTU_tax = fungi_tax_Flattenning %>% tidyr::separate(col = taxonomy, 
                                                     into = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"),
