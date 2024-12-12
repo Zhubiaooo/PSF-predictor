@@ -1,8 +1,9 @@
 ## Effects of conditioning species, drought and their interactions on plant aboveground biomass
 library(openxlsx)
 library(dplyr)
-library(phytools)
-library(vegan)
+library(emmeans)
+library(lme4)
+library(lmerTest)
 
 Soil_group = read.xlsx("Coexistence_data.xlsx", sheet = "Pot_conditioning_phase", rowNames = T, colNames = T)
 Soil_group$Sample_ID = rownames(Field_group)
@@ -35,8 +36,8 @@ bio_data_sum$drought2 = factor(bio_data_sum$drought2, levels = c("Ambient", "Dro
 
 
 ###
-emm1 = emmeans(bio_mod, specs = pairwise ~ abbrev_focal * drought2, type = 'response', adjust = 'none')
-emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none",decreasing = T)
+emm1 = emmeans(bio_mod, specs = pairwise ~ abbrev_focal * drought2, type = 'response', adjust = 'tukey')
+emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none", decreasing = T)
 emm1_multi$.group <- trimws(emm1_multi$.group)
 
 bio_data_sum = bio_data_sum %>% left_join(emm1_multi)
