@@ -380,7 +380,6 @@ emm1 = emmeans(mod_lme, specs = pairwise ~ drought2 * abbrev_focal, type = 'resp
 emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none",decreasing = T)
 emm1_multi$.group <- trimws(emm1_multi$.group)
 
-
 ##
 PSF_data_mean = subset(PSF_data, PSF_val != "NA") %>% group_by(drought2, abbrev_focal) %>% 
   summarise(mean_PSF = mean(PSF_val),sd_PSF = sd(PSF_val, na.rm = TRUE),       
@@ -400,8 +399,8 @@ ggplot(PSF_data_mean, aes(x = abbrev_focal, y = mean_PSF)) +
   scale_fill_manual(values = c("#70A7C3","#A67C2A")) + 
   scale_color_manual(values = c("#70A7C3","#A67C2A")) + 
   theme_bw() + mytheme +
-  scale_y_continuous(labels = scales::label_comma(accuracy =0.1), limits = c(-0.62, 0.38)) + 
-  labs(x = "Response species",
+  scale_y_continuous(labels = scales::label_comma(accuracy =0.1)) + 
+  labs(x = "Responding species",
        y = expression(PSF[competitiveness] ~ "(Ln " ~ frac(CI[home], CI[away]) ~ ")"), 
        fill = NULL, tag = "b") + 
   theme(legend.position = "none",
@@ -464,5 +463,3 @@ ggplot(data = PSF_data_rela, aes(x = PSF_growth, y = PSF_compi, color = drought2
 
 library(patchwork)
 ((Fig_2a/Fig_2b)|Fig_2c) + plot_layout(widths = c(0.45,0.55))
-
-
