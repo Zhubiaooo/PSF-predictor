@@ -15,7 +15,7 @@ mod = lmer(SM ~ drought * Times + (1|block/code), data = pot_sm_data)
 summary(mod)
 anova(mod)
 
-emm1 = emmeans(mod, specs = pairwise ~ Times * drought, type = 'response', adjust = 'none')
+emm1 = emmeans(mod, specs = pairwise ~ Times * drought, type = 'response', adjust = 'tukey')
 emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none",decreasing = T)
 emm1_multi$.group <- trimws(emm1_multi$.group)
 
@@ -55,10 +55,5 @@ ggplot(data = pot_sm_data_mean, aes(x = time, y = mean_SM, fill = drought)) +
         legend.key = element_blank(),
         axis.text.x = element_text(angle = 25, hjust = 1, vjust = 1),
         legend.background = element_rect(fill = NA)) + 
-  scale_x_continuous(breaks=c(45481,45504,45518,45533,45550,45563,45590), 
-                     labels=c("2022-07-09", "2022-08-01","2022-08-15","2022-08-30","2022-09-16","2022-09-29","2022-10-26")) -> Fig_S1; Fig_S1
-
-
-
-
-
+scale_x_continuous(breaks=c(45481,45504,45518,45533,45550,45563,45590), 
+                     labels=c("09-Jul-2022", "01-Aug-2022","15-Aug-2022","30-Aug-2022","16-Sept-2022","29-Sept-2022","26-Oct2022")) -> Fig_S1; Fig_S1
