@@ -121,12 +121,25 @@ Soil_group = Soil_group[rownames(species_hel), ]
 df <- phyloseq(otu_table(species_hel, taxa_are_rows = F), phy_tree(ASV_tree_zyl))
 all_unif_dis=phyloseq::UniFrac(df, weighted = T)
 
-# Table S2 
+# PERMANOVA
 set.seed(1234)
 with(Soil_group, adonis2(all_unif_dis ~  drought * focal, 
                          data = Soil_group, permutations = 999, strata = block))
 
+## Fungi richness
+soil_richness <- as.data.frame(specnumber(t(fungi_Flattening)))
+colnames(soil_richness) = "Richness";  soil_richness$Sample_ID = rownames(soil_richness)
+Soil_group2 = Soil_group %>% left_join(soil_richness)
+colnames(Soil_group2)
+mod = lmer(Richness ~ abbrev_focal * drought2 + (1|block), data = Soil_group2)
+anova(mod)
+summary(mod)
 
+Soil_group2 %>% group_by(drought2) %>% 
+  summarise(mean_SR = mean(Richness),sd_SR = sd(Richness, na.rm = TRUE),       
+            se_SR = sd_SR / sqrt(n()), .groups = 'drop')
+
+## plot
 # Visualized by plotting axis from principal coordinates analysis (PCoA)
 gaw.pco<-cmdscale(all_unif_dis, eig = T)
 var<-round(gaw.pco$eig/sum(gaw.pco$eig)*100,1)
@@ -149,21 +162,27 @@ df = plotdata %>% group_by(abbrev, drought) %>%
             PCOA2_mean = mean(PCOA2), PCOA2_se = sd(PCOA2)/(sqrt(length(PCOA2))))
 
 plot_data2 = merge(plotdata, df, by = c("abbrev", "drought"))
+
+plot_data2$drought = ifelse(plot_data2$drought == "D", "Drought", "Ambient")
+df$drought = ifelse(df$drought == "D", "Drought", "Ambient")
+
+
+plot_data2$abbrev = factor(plot_data2$abbrev, levels = c("Ac","Bb","Cal","Car","Pb","Sp"))
+df$abbrev = factor(df$abbrev, levels = c("Ac","Bb","Cal","Car","Pb","Sp"))
 ###
 ggplot(df, aes(PCOA1_mean, PCOA2_mean))+
-  geom_point(subset(plot_data2, drought == "D"),mapping = aes(PCOA1, PCOA2,color = abbrev), pch = 16, size = 2, alpha = 0.5) +
-  geom_point(subset(plot_data2, drought == "G"),mapping = aes(PCOA1, PCOA2,color = abbrev), pch = 21, size = 2, alpha = 0.5) +
+  geom_point(data = plot_data2,mapping = aes(PCOA1, PCOA2,color = abbrev, shape = drought), size = 2, alpha = 0.5, show.legend = F) +
   geom_errorbar(data = df,mapping = aes(ymax = PCOA2_mean+PCOA2_se, ymin=PCOA2_mean-PCOA2_se,color = abbrev),width=0,size=0.8,alpha = 1)+#
   geom_errorbarh(data = df,mapping = aes(xmax=PCOA1_mean+PCOA1_se,xmin=PCOA1_mean-PCOA1_se,color = abbrev),height=0,size=0.8,alpha = 1) +
-  geom_point(subset(df, drought == "D"),mapping = aes(PCOA1_mean, PCOA2_mean, color = abbrev), pch = 1, size = 3.5)+
-  geom_point(subset(df, drought == "G"),mapping = aes(PCOA1_mean, PCOA2_mean, fill = abbrev, color = abbrev), pch = 21, size = 3.5)+
-  scale_color_manual(values = c("#EB7771","#1EBAB2","#A3866E","#615A8C","#EB913F","#2873A7")) +
-  scale_fill_manual(values = c("#EB7771","#1EBAB2","#A3866E","#615A8C","#EB913F","#2873A7")) +
+  geom_point(data = df,mapping = aes(PCOA1_mean, PCOA2_mean, color = abbrev, shape = drought), size = 3.5)+
+  scale_color_manual(values = c("#FBB050","#98694E","#C85C19","#4298C5","#004A80","#D2BEA2")) +
+  scale_fill_manual(values = c("#FBB050","#98694E","#C85C19","#4298C5","#004A80","#D2BEA2")) +
+  scale_shape_manual(values = c(16,21)) + 
   labs(x=paste("PCoA1 (", format(100 * eig[1] / sum(eig), digits=3), "%)", sep=""),
        y=paste("PCoA2 (", format(100 * eig[2] / sum(eig), digits=3), "%)", sep=""), tag = "a") + 
   scale_x_continuous(labels = scales::label_comma(accuracy =0.01)) +
-  scale_y_continuous(labels = scales::label_comma(accuracy =0.01)) + 
-  theme_bw() + mytheme + theme(legend.position = "none")
+  scale_y_continuous(labels = scales::label_comma(accuracy =0.01), limits = c(-0.032,0.05)) + 
+  theme_bw() + mytheme + theme(legend.position = "right") -> Fig_3a; Fig_3a
 
 ## Pathogens
 path_hel <- as.data.frame(decostand(t(fungi_Flattening[Pathogens$OTU_ID,]), method = 'hellinger'))
@@ -171,10 +190,28 @@ library(phyloseq)
 df <- phyloseq(otu_table(path_hel, taxa_are_rows = F), phy_tree(ASV_tree_zyl))
 path_unif_dis=phyloseq::UniFrac(df, weighted = T)
 
-# Table S2 
+# PERMANOVA
 set.seed(1234)
 with(Soil_group, adonis2(path_unif_dis ~ drought * focal, 
                          data = Soil_group, permutations = 999, strata = block))
+
+## Fungi richenss
+Path_richness <- as.data.frame(specnumber(t(fungi_Flattening[Pathogens$OTU_ID,])))
+colnames(Path_richness) = "Richness";  Path_richness$Sample_ID = rownames(Path_richness)
+Soil_group3 = Soil_group %>% left_join(Path_richness)
+colnames(Soil_group3)
+mod = lmer(Richness ~ abbrev_focal * drought2 + (1|block), data = Soil_group3)
+anova(mod)
+summary(mod)
+
+emm1 = emmeans(mod, specs = pairwise ~ drought2 * abbrev_focal, type = 'response', adjust = 'tukey')
+emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none",decreasing = T)
+emm1_multi$.group <- trimws(emm1_multi$.group)
+
+Path_SR_mean = Soil_group3 %>% group_by(drought2, abbrev_focal) %>% 
+  summarise(mean_SR = mean(Richness),sd_SR = sd(Richness, na.rm = TRUE),       
+            se_SR = sd_SR / sqrt(n()), .groups = 'drop') %>%
+  left_join(emm1_multi)
 
 # plot
 gaw.pco<-cmdscale(path_unif_dis, eig = T)
@@ -197,29 +234,26 @@ df = plotdata %>% group_by(abbrev, drought2) %>%
   summarise(PCOA1_mean = mean(PCOA1), PCOA1_se = sd(PCOA1)/(sqrt(length(PCOA1))),
             PCOA2_mean = mean(PCOA2), PCOA2_se = sd(PCOA2)/(sqrt(length(PCOA2))))
 
-df$abbrev = factor(df$abbrev, levels = c("Ac","Bb","Cal","Car","Pb","Sp"))
 plot_data2 = merge(plotdata, df, by = c("abbrev", "drought2"))
+plot_data2$drought = ifelse(plot_data2$drought == "D", "Drought", "Ambient")
+df$drought = ifelse(df$drought == "D", "Drought", "Ambient")
 plot_data2$abbrev = factor(plot_data2$abbrev, levels = c("Ac","Bb","Cal","Car","Pb","Sp"))
+df$abbrev = factor(df$abbrev, levels = c("Ac","Bb","Cal","Car","Pb","Sp"))
 
 ###
 ggplot(df, aes(PCOA1_mean, PCOA2_mean))+
-  geom_point(subset(plot_data2, drought2 == "Ambient"),mapping = aes(PCOA1, PCOA2,color = abbrev), pch = 16, size = 2, alpha = 0.8) +
-  geom_point(subset(plot_data2, drought2 == "Drought"),mapping = aes(PCOA1, PCOA2,color = abbrev), pch = 21, size = 2, alpha = 0.8) +
+  geom_point(data = plot_data2,mapping = aes(PCOA1, PCOA2,color = abbrev, shape = drought), size = 2, alpha = 0.5, show.legend = F) +
   geom_errorbar(data = df,mapping = aes(ymax = PCOA2_mean+PCOA2_se, ymin=PCOA2_mean-PCOA2_se,color = abbrev),width=0,size=0.8,alpha = 1)+#
   geom_errorbarh(data = df,mapping = aes(xmax=PCOA1_mean+PCOA1_se,xmin=PCOA1_mean-PCOA1_se,color = abbrev),height=0,size=0.8,alpha = 1) +
-  geom_point(df,mapping = aes(PCOA1_mean, PCOA2_mean,color = abbrev, shape = drought2), size = 3.5, alpha = 1) +
-  #scale_color_manual(values = c("#EB7771","#1EBAB2","#A3866E","#615A8C","#EB913F","#2873A7")) +
-  #scale_fill_manual(values = c("#EB7771","#1EBAB2","#A3866E","#615A8C","#EB913F","#2873A7")) +
+  geom_point(data = df,mapping = aes(PCOA1_mean, PCOA2_mean, color = abbrev, shape = drought), size = 3.5)+
   scale_color_manual(values = c("#FBB050","#98694E","#C85C19","#4298C5","#004A80","#D2BEA2")) +
   scale_fill_manual(values = c("#FBB050","#98694E","#C85C19","#4298C5","#004A80","#D2BEA2")) +
   scale_shape_manual(values = c(16,21)) + 
-  scale_x_continuous(labels = scales::label_comma(accuracy =0.01)) +
-  scale_y_continuous(labels = scales::label_comma(accuracy =0.01)) + 
   labs(x=paste("PCoA1 (", format(100 * eig[1] / sum(eig), digits=3), "%)", sep=""),
        y=paste("PCoA2 (", format(100 * eig[2] / sum(eig), digits=3), "%)", sep=""), tag = "a") + 
-  theme_bw() + mytheme + 
-  theme(legend.position = "right",
-        legend.title = element_text(size = 11)) -> Fig_3a; Fig_3a
+  scale_x_continuous(labels = scales::label_comma(accuracy =0.01)) +
+  scale_y_continuous(labels = scales::label_comma(accuracy =0.01), limits = c(-0.032,0.05)) + 
+  theme_bw() + mytheme + theme(legend.position = "right")
 
 # Fig 3b
 # load PSF growth and PSF competitiveness (pair-wise mean value)
@@ -241,11 +275,11 @@ BC_cal_data = NULL
 for (i in drought) {
   for (ii in Code) {
     select_data = subset(all_predict_data, drought == i & Code == ii)
-    # 分割Code列
+    # Split Code Column
     select_data <- select_data %>%
       separate(Code, into = c("sp_A", "sp_B"), sep = "-")
     
-    # 创建home和away列
+    # Creating home and away columns
     select_data <- select_data %>%
       mutate(home = if_else(sp_A == abbrev_focal, sp_A, if_else(sp_B == abbrev_focal, sp_B, NA)),
              away = if_else(sp_A != abbrev_focal & sp_B != abbrev_focal, sp_A, if_else(sp_A == abbrev_focal, sp_B, NA))) %>%
@@ -254,11 +288,11 @@ for (i in drought) {
       mutate(away_code = recode(away, "Bb" = "1", "Ac" = "2", "Car" = "3",
                                 "Cal" = "4", "Sp" = "5", "Pb" = "6"))
     
-    ## 创建样本编号
+    ## Create Sample ID
     Home_ID = paste0("L",i,select_data$home_code,1:5,"W")
     Away_ID = paste0("L",i,select_data$away_code,1:5,"W")
     
-    ## 获取成对相异性矩阵
+    ## Get pairwise dissimilarity matrix
     Select_matrix = dist_pot[Home_ID, Away_ID]
     select_data$mean_BC = mean(Select_matrix)
     BC_cal_data = rbind(BC_cal_data, select_data)
