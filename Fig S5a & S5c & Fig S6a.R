@@ -247,3 +247,5 @@ ggplot(data = all_predict_data, aes(x = mono_mean, y = mean_CI, color = drought2
   labs(x = "Intrinsic growth ability",
        y = "Competition ability", tag = "a") -> Fig_S6a; Fig_S6a
 
+
+Fig_S6a|Fig_S6b
