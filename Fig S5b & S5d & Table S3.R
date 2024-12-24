@@ -18,7 +18,6 @@ field_data_mono = subset(field_data_2023, type == "Mono")
 
 ###
 field_data_mono2 = subset(field_data_mono, ind_bio_sq != "NA")
-
 ## Table S3
 mod = lmer(ind_bio_sq ~ drought2 * abbrev_focal + (1|block), data = field_data_mono2)
 anova(mod, type = 3)
