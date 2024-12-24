@@ -63,7 +63,7 @@ ggplot(bio_data_sum, aes(x = abbrev_focal, y = mean_bio)) +
   annotate("text", x = 5.4, y = 1.7, parse = TRUE, size = 3.5, label = expression("C:" ~ italic(p) < 0.001)) + 
   annotate("text", x = 5.4, y = 1.3, parse = TRUE, size = 3.5, label = expression("W × C:" ~ italic(p) < 0.001)) + 
   scale_y_continuous(labels = scales::label_comma(accuracy =0.1)) + 
-  labs(x = "Soil conditioning species",y = "Aboverground biomass (g, sqrt)",fill = NULL) + 
+  labs(x = "Conditioning species",y = "Aboverground biomass (g, sqrt)",fill = NULL) + 
   theme(legend.position = c(0.13, 0.13),
         legend.key = element_blank(),
         legend.background = element_rect(fill = NA)) -> Fig_S2; Fig_S2
