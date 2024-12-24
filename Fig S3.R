@@ -37,5 +37,5 @@ ggplot(data = field_svw_mean, aes(x = Times, y = mean_SVW, color = group2)) +
   labs(x = NULL,y = "Soil volumetric water content (%)",fill = NULL) + 
   theme(legend.position = c(0.15, 0.90),
         legend.key = element_blank(),
+        axis.text.x = element_text(angle = 25, hjust = 1, vjust = 1),
         legend.background = element_rect(fill = NA)) -> Fig_S3; Fig_S3
-
