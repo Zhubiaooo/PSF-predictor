@@ -23,7 +23,11 @@ Soil_group$drought2 = factor(Soil_group$drought2, levels = c("Ambient", "Drought
 bio_mod = lmer(bio_sq ~ drought2 * abbrev_focal + (1|block), data = Soil_group)
 anova(bio_mod, type = 3)
 
-# Fig S2
+Soil_group %>% group_by(drought) %>% 
+  summarise(mean_bio = mean(bio_sq),sd_bio = sd(bio_sq, na.rm = TRUE),       
+            se_bio = sd_bio / sqrt(n()), .groups = 'drop')
+
+# Fig S1
 bio_data_sum = Soil_group %>% group_by(drought, focal) %>% 
   summarise(mean_bio = mean(bio_sq),sd_bio = sd(bio_sq, na.rm = TRUE),       
             se_bio = sd_bio / sqrt(n()), .groups = 'drop') %>%
@@ -55,10 +59,11 @@ ggplot(bio_data_sum, aes(x = abbrev_focal, y = mean_bio)) +
   scale_fill_manual(values = c("#70A7C3","#A67C2A")) + 
   scale_color_manual(values = c("#70A7C3","#A67C2A")) + 
   theme_bw() + mytheme +
-  annotate("text", x = 1.4, y = 1.5, parse = TRUE, size = 3.5, 
-           label = expression("W × C:" ~ italic(p) < 0.001)) + 
+  annotate("text", x = 5.4, y = 2.1, parse = TRUE, size = 3.5, label = expression("W:" ~ italic(p) < 0.001)) + 
+  annotate("text", x = 5.4, y = 1.7, parse = TRUE, size = 3.5, label = expression("C:" ~ italic(p) < 0.001)) + 
+  annotate("text", x = 5.4, y = 1.3, parse = TRUE, size = 3.5, label = expression("W × C:" ~ italic(p) < 0.001)) + 
   scale_y_continuous(labels = scales::label_comma(accuracy =0.1)) + 
   labs(x = "Soil conditioning species",y = "Aboverground biomass (g, sqrt)",fill = NULL) + 
-  theme(legend.position = c(0.85, 0.13),
+  theme(legend.position = c(0.13, 0.13),
         legend.key = element_blank(),
         legend.background = element_rect(fill = NA)) -> Fig_S2; Fig_S2
