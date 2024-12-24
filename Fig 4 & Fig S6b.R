@@ -148,8 +148,8 @@ ggplot(data = all_predict_data, aes(x = mean_PSF_G, y = mean_CI, color = drought
            label = expression(italic(R)^2 == 0.252 ~ "," ~ italic(p) == 0.011)) +
   annotate("text", x = -0.28, y = -0.00, parse = TRUE, size = 3.5, color = "#A67C2A",
            label = expression(italic(R)^2 == 0.493 ~ "," ~ italic(p) < 0.001)) +
-  labs(#x = expression(PSF[growth] ~ "(Ln " ~ frac(Mass[home-mono], Mass[away-mono]) ~ ")"),
-       x = "",
+  labs(x = expression(PSF[growth] ~ "(Ln " ~ frac(Mass[home-mono], Mass[away-mono]) ~ ")"),
+       #x = "",
        y = "Competition ability in\ncommon garden experiment", tag = "c") -> Fig_4c; Fig_4c
 
 ################################################################################
@@ -181,13 +181,13 @@ ggplot(data = all_predict_data, aes(x = mean_PSF_CI, y = mean_CI, color = drough
            label = expression(italic(R)^2 == 0.164 ~ "," ~ italic(p) == 0.045)) +
   annotate("text", x = -0.3, y = 0.05, parse = TRUE, size = 3.5, color = "#A67C2A",
            label = expression(italic(R)^2 == 0.048 ~ "," ~ italic(p) == 0.244)) +
-  labs(x = expression(PSF[competitiveness] ~ "(Ln " ~ frac(CI[home], CI[away]) ~ ")"),
+  labs(x = expression(PSF[comp] ~ "(Ln " ~ frac(CI[home], CI[away]) ~ ")"),
        #x = "",
        y = "Competition ability in\ncommon garden experiment", tag = "d") -> Fig_4d; Fig_4d
 
 
 library(patchwork)
-(Fig_4a|Fig_4b)/(Fig_4c|Fig_4d) -> Fig_4
+(Fig_4a|Fig_4b)/(Fig_4c|Fig_4d) -> Fig_4; Fig_4
 
 
 ################################################################################
@@ -223,8 +223,6 @@ ggplot(data = all_predict_data, aes(x = mono_mean, y = mean_CI, color = drought2
   labs(x = "Intrinsic growth ability",
        y = "Competition ability", tag = "b") -> Fig_S6b; Fig_S6b
 
-(Fig_S6a|Fig_S6b) -> Fig_S6; Fig_S6
-
-
-
+##
+#(Fig_S6a|Fig_S6b) -> Fig_S6; Fig_S6
 
