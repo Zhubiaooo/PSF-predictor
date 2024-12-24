@@ -173,6 +173,10 @@ shapiro.test(residuals(mod_lme))
 summary(mod_lme)
 ranova(mod_lme)
 
+emm1 = emmeans(mod_lme, specs = pairwise ~ drought2 * abbrev_focal, type = 'response', adjust = 'tukey')
+emm1_multi = multcomp::cld(emm1,alpha=0.05,Letters=letters,adjust="none",decreasing = T)
+emm1_multi$.group <- trimws(emm1_multi$.group)
+
 ##
 PSF_data_mean = subset(PSF_data, PSF_val != "NA") %>% group_by(drought2, abbrev_focal) %>% 
   summarise(mean_PSF = mean(PSF_val),sd_PSF = sd(PSF_val, na.rm = TRUE),       
@@ -195,7 +199,7 @@ ggplot(PSF_data_mean, aes(x = abbrev_focal, y = mean_PSF)) +
   #geom_line(aes(x = abbrev_focal, y = mean_PSF, group = drought2), color = "black", size = 0.5, inherit.aes = FALSE) + 
   theme_bw() + mytheme +
   scale_y_continuous(labels = scales::label_comma(accuracy =0.1), limits = c(-0.65, 0.8)) + 
-  labs(x = "Response species",
+  labs(x = "Responding species",
        y = expression(PSF[growth] ~ "(Ln " ~ frac(Mass[home-mono], Mass[away-mono]) ~ ")"), 
        fill = NULL, tag = "a") + # italic
   theme(legend.position = c(0.12, 0.88),
@@ -355,7 +359,7 @@ str(PSF_data)
 
 ### 
 Soil_group = read.xlsx("Coexistence_data.xlsx", sheet = "Pot_conditioning_phase", rowNames = T, colNames = T)
-Soil_group$Sample_ID = rownames(Field_group)
+Soil_group$Sample_ID = rownames(Soil_group)
 colnames(Soil_group)
 Soil_group$condi_bio = sqrt(Soil_group$biomass)
 Soil_group = Soil_group %>% 
@@ -455,7 +459,7 @@ ggplot(data = PSF_data_rela, aes(x = PSF_growth, y = PSF_compi, color = drought2
   scale_y_continuous(labels = scales::label_comma(accuracy =0.1)) + 
   theme_bw() + mytheme + theme(legend.position = c(0.85,0.90)) + 
   labs(x = expression("PSF "[growth] ~ "estimated by PSF experiment"),
-       y = expression("PSF "[competitiveness] ~ "estimated by PSF experiment"), tag = "c") -> Fig_2c; Fig_2c
+       y = expression("PSF "[comp] ~ "estimated by PSF experiment"), tag = "c") -> Fig_2c; Fig_2c
 
 
 library(patchwork)
