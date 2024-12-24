@@ -18,6 +18,7 @@ field_data_mono = subset(field_data_2023, type == "Mono")
 
 ###
 field_data_mono2 = subset(field_data_mono, ind_bio_sq != "NA")
+
 ## Table S3
 mod = lmer(ind_bio_sq ~ drought2 * abbrev_focal + (1|block), data = field_data_mono2)
 anova(mod, type = 3)
@@ -51,33 +52,8 @@ ggplot(field_mono_mean, aes(x = abbrev_focal, y = mono_mean)) +
   labs(x = "Growing species",y = "Intrinsic growth rate",fill = NULL, tag = "b") + 
   theme(legend.position = "none",
         legend.key = element_blank(),
-        legend.background = element_rect(fill = NA)) -> Fig_S4aa; Fig_S4aa
+        legend.background = element_rect(fill = NA)) -> Fig_S5b; Fig_S5b
 
-
-field_mono_mean2 = subset(field_data_mono, ind_bio_sq != "NA")  %>% group_by(drought2) %>% 
-  summarise(mono_mean = mean(ind_bio_sq),sd_mono = sd(ind_bio_sq, na.rm = TRUE),       
-            se_mono = sd_mono / sqrt(n()), .groups = 'drop')
-
-field_mono_mean2$.group = c("b","a")
-
-ggplot(field_mono_mean2, aes(x = drought2, y = mono_mean)) + 
-  geom_errorbar(aes(ymin = mono_mean - se_mono, ymax = mono_mean + se_mono, group = drought2), 
-                position=pd, width = 0, color = "black", show.legend = F) +
-  geom_point(size=3,position=pd,alpha=1, pch = 21, aes(fill = drought2), color = "black") +
-  geom_text(data = field_mono_mean2, mapping = aes(x = drought2,y = mono_mean + se_mono + 0.03,label = .group, group = drought2), 
-            color = "black", size = 3,position = position_dodge(.5)) +
-  scale_fill_manual(values = c("#70A7C3","#A67C2A")) + 
-  scale_color_manual(values = c("#70A7C3","#A67C2A")) + 
-  theme_bw() + mytheme +
-  scale_y_continuous(labels = scales::label_comma(accuracy =0.01)) + 
-  labs(x = NULL,y = NULL, fill = NULL) + 
-  theme(legend.position = "none",
-        axis.text.x = element_text(angle = 25, hjust = 1, vjust = 1),
-        legend.key = element_blank(),
-        legend.background = element_rect(fill = NA)) -> Fig_S4ab; Fig_S4ab
-
-g <- ggplotGrob(Fig_S4ab)
-Fig_S4aa + annotation_custom(g,xmin=0.5,xmax=2.2,ymin=0.7,ymax=1.4) -> Fig_S4a; Fig_S4a
 
 ################################################################################
 ###################################  Fig S5d  ##################################
