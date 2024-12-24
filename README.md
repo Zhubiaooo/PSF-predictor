@@ -18,38 +18,38 @@ CODE INFORMATION
 
 This script contains all the custom functions used in the analysis. You need to load them in advance before analysis.
 
-2) Fig 2 & Table S4.R
+2) Fig 2 & Table S2.R
 
-This script contains all the data analysis and visualization code of Fig 2 & Table S4.
+This script contains all the data analysis and visualization code of Fig 2 & Table S2.
 
-2) Fig 3 & Table S2.R
+2) Fig 3.R
 
-This script contains all the data analysis and visualization code of Fig 3 & Table S2.
+This script contains all the data analysis and visualization code of Fig 3.
 
-3) Fig 4 & Fig S6.R
+3) Fig 4 & Fig S6b.R
 
-This script contains all the data analysis and visualization code of Fig 4 & Fig S6.
+This script contains all the data analysis and visualization code of Fig 4 & Fig S6b.
 
 4) Fig S1.R
 
 This script contains all the data analysis and visualization code of Fig S1.
 
-5) Fig S3 & Table S1.R
+5) Fig S2.R
 
-This script contains all the data analysis and visualization code of Fig S3 & Table S1.
+This script contains all the data analysis and visualization code of Fig S2.
 
-6) Fig S4 & Table S3.R
+6) Fig S3.R
 
-This script contains all the data analysis and visualization code of Fig S4 & Table S3.
+This script contains all the data analysis and visualization code of Fig S3.
 
-7) Fig S5 & Table S5.R
+7) Fig S4 & Table S1.R
 
-This script contains all the data analysis and visualization code of Fig S5 & Table S5.
+This script contains all the data analysis and visualization code of Fig S4 & Table S1.
 
-8)  Table S6.R
+8)  Fig S5a & S5c & Fig S6a.R
 
-This script contains all the data analysis and visualization code of Table S6.
+This script contains all the data analysis and visualization code of Fig S5a & S5c & Fig S6a.
 
-9)  Table S7.R
+9)  Fig S5b & S5d & Table S3.R
 
-This script contains all the data analysis and visualization code of Table S7.
+This script contains all the data analysis and visualization code of Fig S5b & S5d & Table S3.
