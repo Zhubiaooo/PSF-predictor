@@ -4,9 +4,6 @@ library(lme4)
 library(lmerTest)
 
 pot_bio_data = read.xlsx("Coexistence_data.xlsx", sheet = "Pot_feedback_phase", rowNames = F, colNames = T)
-#pot_bio_data = subset(pot_bio_data, density != "0")
-
-#write.csv(filtered_data_all,"filtered_data_all-11-24-3.csv")
 ################################################################################
 ## 
 pot_bio_data_mix = subset(pot_bio_data, group == "1" & above_bio != 0)
