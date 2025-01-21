@@ -1,5 +1,5 @@
 # PSF-predictor
-This repository contains all the compiled data and code from the work "xxxxxxxxxxxx" authored by xxxxx. 
+This repository contains all the compiled data and code from the work "Opposing Effects of Soil-Feedbacks on Plant Growth and Competitive Ability" authored by Zhu et al.(2024) 
 
 DATA & FILE OVERVIEW
 
